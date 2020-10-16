@@ -292,7 +292,8 @@ class Resolve(object):
         classes = {'python': set(),
                    'request_conflict_with_history': set(),
                    'direct': set(),
-                   'cuda': set(), }
+                   'virtual_package': set(),
+                   }
         specs_to_add = set(MatchSpec(_) for _ in specs_to_add or [])
         history_specs = set(MatchSpec(_) for _ in history_specs or [])
         for chain in bad_deps:
@@ -307,10 +308,10 @@ class Resolve(object):
                             set(self.find_matches(chain[-1]))):
                         classes['python'].add((tuple([chain[0], chain[-1]]),
                                                str(MatchSpec(python_spec, target=None))))
-            elif chain[-1].name == '__cuda':
-                cuda_version = [_ for _ in self._system_precs if _.name == '__cuda']
-                cuda_version = cuda_version[0].version if cuda_version else "not available"
-                classes['cuda'].add((tuple(chain), cuda_version))
+            elif chain[-1].name.startswith('__'):
+                version = [_ for _ in self._system_precs if _.name == chain[-1].name]
+                virtual_package_version = version[0].version if version else "not available"
+                classes['virtual_package'].add((tuple(chain), virtual_package_version))
             elif chain[0] in specs_to_add:
                 match = False
                 for spec in history_specs:
@@ -444,6 +445,8 @@ class Resolve(object):
         strict_channel_priority = context.channel_priority == ChannelPriority.STRICT
 
         specs = set(specs) | (specs_to_add or set())
+        # Remove virtual packages
+        specs = set([spec for spec in specs if not spec.name.startswith('__')])
         if len(specs) == 1:
             matches = self.find_matches(next(iter(specs)))
             if len(matches) == 1:
@@ -475,16 +478,15 @@ class Resolve(object):
         conflicting_pkgs_pkgs = {}
         for k, v in dep_list.items():
             set_v = frozenset(v)
-            # Packages probably conflict if it's cuda
-            if k == '__cuda':
+            # Packages probably conflicts if many specs depend on it
+            if len(set_v) > 1:
+                if conflicting_pkgs_pkgs.get(set_v) is None:
+                    conflicting_pkgs_pkgs[set_v] = [k]
+                else:
+                    conflicting_pkgs_pkgs[set_v].append(k)
+            # Conflict if required virtual package is not present
+            elif k.startswith("__") and any(s for s in set_v if s.name != k):
                 conflicting_pkgs_pkgs[set_v] = [k]
-            else:
-                # Packages probably conflicts if many specs depend on it
-                if len(set_v) > 1:
-                    if conflicting_pkgs_pkgs.get(set_v) is None:
-                        conflicting_pkgs_pkgs[set_v] = [k]
-                    else:
-                        conflicting_pkgs_pkgs[set_v].append(k)
 
         with tqdm(total=len(specs), desc="Determining conflicts",
                   leave=False, disable=context.json) as t:
@@ -908,7 +910,9 @@ class Resolve(object):
         for prec in itervalues(self.index):
             nkey = C.Not(self.to_sat_name(prec))
             for ms in self.ms_depends(prec):
-                C.Require(C.Or, nkey, self.push_MatchSpec(C, ms))
+                # Virtual packages can't be installed, we ignore them
+                if not ms.name.startswith('__'):
+                    C.Require(C.Or, nkey, self.push_MatchSpec(C, ms))
 
         if log.isEnabledFor(DEBUG):
             log.debug("gen_clauses returning with clause count: %d", C.get_clause_count())

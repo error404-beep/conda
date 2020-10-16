@@ -1,3 +1,169 @@
+## 4.9.0 (2020-10-19)
+
+### Enhancements:
+
+* Add `osx-arm64` as a recognized platform (#10128, #10134, #10137)
+* Resign files modified during installation on ARM64 macOS (#10260)
+* Add `__archspec` virtual package to identify CPU microarchitecture (#9930)
+* Add `__unix` and `__win` virtual packages (#10214)
+* Add `--no-capture--output` option to `conda run` (#9646)
+* Add `--live-stream` option to `conda run` (#10270)
+* Export and import environment variables set using `conda env config` (#10169)
+* Cache repodata from `file://` channels (#9730)
+* Do not relink already-installed packages (#10208)
+* Speed up JSON formatting in logz module (#10189)
+
+
+### Bug fixes:
+
+* Stop `env remove --dry-run` from actually removing environments (#10261)
+* Virtual package requirements are now considered by the solver (#10057)
+* Fix cached filename processing when using only tar.bz2 (#10193)
+* Stop showing solver hints about CUDA when it is not a dependency (#10275)
+* Ignore virtual packages when checking environment consistency (#10196)
+* Fix `config --json` output errors in certain circumstances (#10194)
+* More consistent error handling by `conda shell` (#10238)
+* Bump vendored version of tqdm to fix various threading and I/O bugs (#10266)
+
+
+### Docs:
+
+* Correctly state default `/AddToPath` option in Windows installer (#10179)
+* Fix typos in `--repodata-fn` help text (#10279)
+
+
+### Miscellaneous:
+
+* Update CI infrastructure to use GitHub Actions (#10176, #10186, #10234)
+* Update README badge to show GitHub Actions status (#10254)
+
+
+### Contributors
+
+* @AlbertDeFusco
+* @angloyna
+* @bbodenmiller
+* @casperdcl
+* @chenghlee
+* @chrisburr
+* @cjmartian
+* @dhirschfeld
+* @ericpre
+* @gabrielcnr
+* @InfiniteChai
+* @isuruf
+* @jjhelmus
+* @LorcanHamill
+* @maresb
+* @mingwandroid
+* @mlline00
+* @xhochy
+* @ydmytryk
+
+
+## 4.8.5 (2020-09-14)
+
+### Enhancements
+
+* Add `osx-arm64` as a recognized platform (#10128, #10134)
+
+### Contributors
+
+* @isuruf
+* @jjhelmus
+
+
+## 4.8.4 (2020-08-06)
+
+### Enhancements:
+
+* Add `linux-ppc64` as a recognized platform (#9797, #9877)
+* Add `linux-s390x` as a recognized platform (#9933, #10051)
+* Add spinner to pip installer (#10032)
+* Add support for running conda in PyPy (#9764)
+* Support creating conda environments using remote specification files (#9835)
+* Allow request retries on various HTTP errors (#9919)
+* Add `compare` command for environments against a specification file (#10022)
+* Add (preliminary) support for JSON-format activation (#8727)
+* Properly handle the `CURL_CA_BUNDLE` environment variable (#10078)
+* More uniformly handle `$CONDA_PREFIX` when exporting environments (#10092)
+* Enable trailing `_` to anchor OpenSSL-like versions (#9859)
+* Replace `listdir` and `glob` with `scandir` (#9889)
+* Ignore virtual packages when searching for constrained packages (#10117)
+* Add virtual packages to be considered in the solver (#10057)
+
+### Bug fixes:
+
+* Prevent `remove --all` from deleting non-environment directories (#10086)
+* Prevent `create --dry-run --yes` from deleting existing environments (#10090)
+* Remove extra newline from environment export file (#9649)
+* Print help on incomplete `conda env config` command rather than crashing (#9660)
+* Correctly set exit code/errorlevel when `conda run` exits (#9665)
+* Send "inconsistent environment" warnings to stderr to avoid breaking JSON output (#9738)
+* Fix output formatting from post-link scripts (#9841)
+* Fix URL parsing for channel subdirs (#9844)
+* Fix `conda env export -f` sometimes producing empty output files (#9909)
+* Fix handling of Python releases with two-digit minor versions (#9999)
+* Do not use gid to determine if user is an admin on \*nix platforms (#10002)
+* Suppress spurious xonsh activation warnings (#10005)
+* Fix crash when running `conda update --all` on a nonexistent environment (#10028)
+* Fix collections import for Python 3.8 (#10093)
+* Fix regex-related deprecation warnings (#10093, #10096)
+* Fix logic error when running under Python 2.7 on 64-bit platforms (#10108)
+* Fix Python 3.8 leaked semaphore issue (#10115)
+
+### Docs:
+
+* Fix formatting and typos (#9623, #9689, #9898, #10042)
+* Correct location for yum repository configuration files (#9988)
+* Clarify usage for the `--channel` option (#10054)
+* Clarify Python is not installed by default into new environments (#10089)
+
+### Miscellaneous:
+
+* Fixes to tests and CI pipelines (#9842, #9863, #9938, #9960, #10010)
+* Remove conda-forge dependencies for developing conda (#9857, #9871)
+* Audit YAML usage for `safe_load` vs `round_trip_load` (#9902)
+
+### Contributors:
+
+* @alanhdu
+* @angloyna
+* @Anthchirp
+* @Arrowbox
+* @bbodenmiller
+* @beenje
+* @bernardoduarte
+* @birdsarah
+* @bnemanich
+* @chenghlee
+* @ChihweiLHBird
+* @cjmartian
+* @ericpre
+* @error404-beep
+* @esc
+* @hartb
+* @hugobuddel
+* @isuruf
+* @jjhelmus
+* @kalefranz
+* @mingwandroid
+* @mlline00
+* @mparry
+* @mrocklin
+* @necaris
+* @pdnm
+* @pradghos
+* @ravigumm
+* @Reissner
+* @scopatz
+* @sidhant007
+* @songmeixu
+* @speleo3
+* @tomsaleeba
+* @WinstonPais
+
+
 ## 4.8.3 (2020-03-13)
 
 ### Docs:

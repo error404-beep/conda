@@ -49,9 +49,8 @@ Use the terminal or an Anaconda Prompt for the following steps:
 
       proceed ([y]/n)?
 
-  This creates the myenv environment in ``/envs/``. This
-  environment uses the same version of Python that you are
-  currently using because you did not specify a version.
+  This creates the myenv environment in ``/envs/``. No
+  packages will be installed in this environment.
 
 3. To create an environment with a specific version of Python:
 
@@ -639,6 +638,21 @@ To unset the environment variable, run ``conda env config vars unset my_var -n t
 When you deactivate your environment, you can see that environment variable goes away by rerunning 
 ``echo my_var`` or ``conda env config vars list`` to show that the variable name
 is no longer present.
+
+Environment variables set using ``conda env config vars`` will be retained in the output of
+``conda env export``. Further, you can declare environment variables in the environment.yml file
+as shown here::
+
+    name: env-name
+    channels:
+      - conda-forge
+      - defaults
+    dependencies:
+      - python=3.7
+      - codecov
+    variables:
+      VAR1: valueA
+      VAR2: valueB
 
 
 Saving environment variables

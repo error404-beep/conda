@@ -55,12 +55,14 @@ _platform_map = {
     'win32': 'win',
     'zos': 'zos',
 }
-non_x86_linux_machines = {
+non_x86_machines = {
     'armv6l',
     'armv7l',
     'aarch64',
+    'arm64',
     'ppc64',
     'ppc64le',
+    's390x',
 }
 _arch_names = {
     32: 'x86',
@@ -410,7 +412,7 @@ class Context(Configuration):
     @property
     def arch_name(self):
         m = platform.machine()
-        if self.platform == 'linux' and m in non_x86_linux_machines:
+        if m in non_x86_machines:
             return m
         else:
             return _arch_names[self.bits]
@@ -456,8 +458,8 @@ class Context(Configuration):
         if self._subdir:
             return self._subdir
         m = platform.machine()
-        if m in non_x86_linux_machines:
-            return 'linux-%s' % m
+        if m in non_x86_machines:
+            return '%s-%s' % (self.platform, m)
         elif self.platform == 'zos':
             return 'zos-z'
         else:
@@ -818,121 +820,121 @@ class Context(Configuration):
     @property
     def category_map(self):
         return odict((
-        ('Channel Configuration', (
-            'channels',
-            'channel_alias',
-            'default_channels',
-            'override_channels_enabled',
-            'whitelist_channels',
-            'custom_channels',
-            'custom_multichannels',
-            'migrated_channel_aliases',
-            'migrated_custom_channels',
-            'add_anaconda_token',
-            'allow_non_channel_urls',
-            'restore_free_channel',
-            'repodata_fns',
-            'use_only_tar_bz2',
-            'repodata_threads',
-        )),
-        ('Basic Conda Configuration', (  # TODO: Is there a better category name here?
-            'envs_dirs',
-            'pkgs_dirs',
-            'default_threads',
-        )),
-        ('Network Configuration', (
-            'client_ssl_cert',
-            'client_ssl_cert_key',
-            'local_repodata_ttl',
-            'offline',
-            'proxy_servers',
-            'remote_connect_timeout_secs',
-            'remote_max_retries',
-            'remote_backoff_factor',
-            'remote_read_timeout_secs',
-            'ssl_verify',
-        )),
-        ('Solver Configuration', (
-            'aggressive_update_packages',
-            'auto_update_conda',
-            'channel_priority',
-            'create_default_packages',
-            'disallowed_packages',
-            'force_reinstall',
-            'pinned_packages',
-            'pip_interop_enabled',
-            'track_features',
-        )),
-        ('Package Linking and Install-time Configuration', (
-            'allow_softlinks',
-            'always_copy',
-            'always_softlink',
-            'path_conflict',
-            'rollback_enabled',
-            'safety_checks',
-            'extra_safety_checks',
-            'shortcuts',
-            'non_admin_enabled',
-            'separate_format_cache',
-            'verify_threads',
-            'execute_threads',
-        )),
-        ('Conda-build Configuration', (
-            'bld_path',
-            'croot',
-            'anaconda_upload',
-            'conda_build',
-        )),
-        ('Output, Prompt, and Flow Control Configuration', (
-            'always_yes',
-            'auto_activate_base',
-            'auto_stack',
-            'changeps1',
-            'env_prompt',
-            'json',
-            'notify_outdated_conda',
-            'quiet',
-            'report_errors',
-            'show_channel_urls',
-            'verbosity',
-            'unsatisfiable_hints',
-            'unsatisfiable_hints_check_depth'
-        )),
-        ('CLI-only', (
-            'deps_modifier',
-            'update_modifier',
+            ('Channel Configuration', (
+                'channels',
+                'channel_alias',
+                'default_channels',
+                'override_channels_enabled',
+                'whitelist_channels',
+                'custom_channels',
+                'custom_multichannels',
+                'migrated_channel_aliases',
+                'migrated_custom_channels',
+                'add_anaconda_token',
+                'allow_non_channel_urls',
+                'restore_free_channel',
+                'repodata_fns',
+                'use_only_tar_bz2',
+                'repodata_threads',
+            )),
+            ('Basic Conda Configuration', (  # TODO: Is there a better category name here?
+                'envs_dirs',
+                'pkgs_dirs',
+                'default_threads',
+            )),
+            ('Network Configuration', (
+                'client_ssl_cert',
+                'client_ssl_cert_key',
+                'local_repodata_ttl',
+                'offline',
+                'proxy_servers',
+                'remote_connect_timeout_secs',
+                'remote_max_retries',
+                'remote_backoff_factor',
+                'remote_read_timeout_secs',
+                'ssl_verify',
+            )),
+            ('Solver Configuration', (
+                'aggressive_update_packages',
+                'auto_update_conda',
+                'channel_priority',
+                'create_default_packages',
+                'disallowed_packages',
+                'force_reinstall',
+                'pinned_packages',
+                'pip_interop_enabled',
+                'track_features',
+            )),
+            ('Package Linking and Install-time Configuration', (
+                'allow_softlinks',
+                'always_copy',
+                'always_softlink',
+                'path_conflict',
+                'rollback_enabled',
+                'safety_checks',
+                'extra_safety_checks',
+                'shortcuts',
+                'non_admin_enabled',
+                'separate_format_cache',
+                'verify_threads',
+                'execute_threads',
+            )),
+            ('Conda-build Configuration', (
+                'bld_path',
+                'croot',
+                'anaconda_upload',
+                'conda_build',
+            )),
+            ('Output, Prompt, and Flow Control Configuration', (
+                'always_yes',
+                'auto_activate_base',
+                'auto_stack',
+                'changeps1',
+                'env_prompt',
+                'json',
+                'notify_outdated_conda',
+                'quiet',
+                'report_errors',
+                'show_channel_urls',
+                'verbosity',
+                'unsatisfiable_hints',
+                'unsatisfiable_hints_check_depth'
+            )),
+            ('CLI-only', (
+                'deps_modifier',
+                'update_modifier',
 
-            'force',
-            'force_remove',
-            'clobber',
+                'force',
+                'force_remove',
+                'clobber',
 
-            'dry_run',
-            'download_only',
-            'ignore_pinned',
-            'use_index_cache',
-            'use_local',
-        )),
-        ('Hidden and Undocumented', (
-            'allow_cycles',  # allow cyclical dependencies, or raise
-            'allow_conda_downgrades',
-            'add_pip_as_python_dependency',
-            'debug',
-            'dev',
-            'default_python',
-            'enable_private_envs',
-            'error_upload_url',  # should remain undocumented
-            'force_32bit',
-            'root_prefix',
-            'sat_solver',
-            'solver_ignore_timestamps',
-            'subdir',
-            'subdirs',
-            # https://conda.io/docs/config.html#disable-updating-of-dependencies-update-dependencies # NOQA
-            # I don't think this documentation is correct any longer. # NOQA
-            'target_prefix_override',
-            # used to override prefix rewriting, for e.g. building docker containers or RPMs  # NOQA
-        )),
-    ))
+                'dry_run',
+                'download_only',
+                'ignore_pinned',
+                'use_index_cache',
+                'use_local',
+            )),
+            ('Hidden and Undocumented', (
+                'allow_cycles',  # allow cyclical dependencies, or raise
+                'allow_conda_downgrades',
+                'add_pip_as_python_dependency',
+                'debug',
+                'dev',
+                'default_python',
+                'enable_private_envs',
+                'error_upload_url',  # should remain undocumented
+                'force_32bit',
+                'root_prefix',
+                'sat_solver',
+                'solver_ignore_timestamps',
+                'subdir',
+                'subdirs',
+                # https://conda.io/docs/config.html#disable-updating-of-dependencies-update-dependencies # NOQA
+                # I don't think this documentation is correct any longer. # NOQA
+                'target_prefix_override',
+                # used to override prefix rewriting, for e.g. building docker containers or RPMs  # NOQA
+            )),
+        ))
 
     def get_descriptions(self):
         return self.description_map
